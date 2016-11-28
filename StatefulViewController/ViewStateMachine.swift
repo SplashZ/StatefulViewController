@@ -115,12 +115,13 @@ public class ViewStateMachine {
         lastState = state
         
         queue.async {
+            // Suspend the queue, it will be resumed in the completion block or in the judgment below
+            self.queue.suspend()
             if state == self.currentState {
+                self.queue.resume()
                 return
             }
             
-            // Suspend the queue, it will be resumed in the completion block
-            self.queue.suspend()
             self.currentState = state
             
             let c: () -> () = {
